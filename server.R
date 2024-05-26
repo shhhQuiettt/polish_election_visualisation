@@ -1,14 +1,13 @@
 library(ggplot2)
 
 server <- function(input, output) {
+    # output abc is text "asdfasdf"
+    output$abc <- renderText({
+        "im abc"
+    })
 
-  output$LinePlot <- renderPlot({
-    x=seq(0, input$Num, 0.1)
-    y=sin(x)
-    df <- data.frame(x, y)
-
-    ggplot(data = df, aes(x, y)) +
-      geom_line() +
-      labs(x = "Time", y = "Sine Wave")
-  })
+    output$plot <- renderPlot({
+        ggplot(data.frame(x = 1:100, y = (1:100)^2), aes(x = x, y = y)) +
+            geom_point()
+    })
  }
