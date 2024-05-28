@@ -20,7 +20,6 @@ server <- function(input, output) {
         selection = "single"
     )
 
-
     output$clicked_row <- renderPrint({
         if (is.null(input$table_rows_selected)) {
             return()
@@ -28,6 +27,13 @@ server <- function(input, output) {
         okregi[input$table_rows_selected, 1]
     })
 
+    output$clicked_d  <-  renderPrint({
+        if (is.null(input$clicked_district)) {
+            return()
+        }
+        input$clicked_district
+    })
 
-    callModule(districtsServer, "districtsServer")
+
+    # callModule(districtsServer, "districtsServer")
 }
