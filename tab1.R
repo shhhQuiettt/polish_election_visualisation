@@ -1,11 +1,10 @@
-# Doesn't work
 tab1UI <- function(id) {
-    ns <- NS(id)
-    fluidPage(
-        h2("Plot"),
-        plotOutput("plot"),
-        h3("asdfasdfasdf"),
-        textOutput(ns("abc")),
-        h3("dup"),
+    # ns <- NS(id)
+    splitLayout(
+        sidebarPanel(h2("Sidebar")),
+        mainPanel(
+            h3("plot"),
+            plotOutput("plot")
+        )
     )
 }
