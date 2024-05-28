@@ -1,4 +1,5 @@
 library(ggplot2)
+source("districtsServer.R")
 
 server <- function(input, output) {
   # output abc is text "asdfasdf"
@@ -80,7 +81,13 @@ server <- function(input, output) {
     if (is.null(input$table_rows_selected)) return()
     okregi[input$table_rows_selected,1]
     
-    
+  })
+  
+  output$clicked_d  <-  renderPrint({
+    if (is.null(input$clicked_district)) {
+      return()
+    }
+    input$clicked_district
   })
   
   # get data from selected row
@@ -94,3 +101,4 @@ server <- function(input, output) {
   #         geom_point()
   # })
  }
+
