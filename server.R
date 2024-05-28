@@ -1,4 +1,5 @@
 library(ggplot2)
+source("districtsServer.R")
 
 server <- function(input, output) {
     output$testText <- renderText({
@@ -27,5 +28,6 @@ server <- function(input, output) {
         okregi[input$table_rows_selected, 1]
     })
 
-    output$plot <- renderPlot(curve(x^2))
+
+    callModule(districtsServer, "districtsServer")
 }

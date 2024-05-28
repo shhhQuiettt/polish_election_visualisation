@@ -1,10 +1,12 @@
-tab1UI <- function(id) {
-    # ns <- NS(id)
+districtsUI <- function(id) {
+    ns <- NS(id)
     splitLayout(
         sidebarPanel(h2("Sidebar")),
         mainPanel(
             h3("plot"),
-            plotOutput("plot")
+            plotOutput("plot"),
+            h3("jd")
         )
     )
+
 }
