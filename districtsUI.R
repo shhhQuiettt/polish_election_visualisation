@@ -15,6 +15,7 @@ districtsUI <- function(id) {
             div(
                 HTML(read_svg("districts.svg"))
             ),
+            plotOutput("district_outcome"),
             tags$script(HTML('
                 document.querySelectorAll("path").forEach(function (element) {
                   if (element.parentElement.id.startsWith("text")) {
@@ -32,7 +33,7 @@ districtsUI <- function(id) {
                     element.style.fill = "red";
                   })
                 })
-    ')),
+     ')),
         )
     )
 }
