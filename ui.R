@@ -1,6 +1,8 @@
 source("districtsUI.R")
 source("tab2.R")
 
+library(bslib)
+
 ui <- fluidPage(
     navbarPage(
         "Navbar!",
@@ -10,8 +12,7 @@ ui <- fluidPage(
             "Summary",
             textOutput("abc"),
             h3("asdfasdfasdf"),
-
         ),
-    )
+    ),
+    theme = bs_theme(bootswatch = "pulse")
 )
-
