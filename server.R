@@ -11,7 +11,7 @@ server <- function(input, output) {
     # output$abc <- renderText({
     #     "im abc"
     # })
-  print(sprintf("%03d", NULL))
+    print(sprintf("%03d", NULL))
     output$testText <- renderText({
         paste(
             "Boredom level ",
@@ -21,7 +21,7 @@ server <- function(input, output) {
     })
 
     # import data from csv okregi.csv
-    okregi <- read.csv("output.csv", sep = ",", encoding = "UTF-8")[,1:2]
+    okregi <- read.csv("output.csv", sep = ",", encoding = "UTF-8")[, 1:2]
     kandydaci <- read.csv("kandydaci_sejm_utf8.csv", sep = ";", encoding = "UTF-8")
     kandydaci[kandydaci$Nazwisko.i.imiona == okregi[2, 1], 7]
 
@@ -52,7 +52,7 @@ server <- function(input, output) {
     output$votes <- renderText({
         paste("number of votes: ", kandydaci[kandydaci$Nazwisko.i.imiona == okregi[input$table_rows_selected, 1], 13])
     })
-    
+
 
     output$image <- renderImage(
         {
@@ -64,11 +64,10 @@ server <- function(input, output) {
         },
         deleteFile = FALSE
     )
-  
+
 
     output$clicked_row <- renderPrint({
-      sprintf("%03d", input$table_rows_selected)
-      
+        sprintf("%03d", input$table_rows_selected)
     })
 
     output$clicked_d <- renderPrint({
@@ -95,6 +94,7 @@ server <- function(input, output) {
     library(dplyr)
     library(stringr)
     library(tibble)
+    library(scales)
 
 
     districts <- tibble(district.no = integer(), person = character(), party = character(), votes = integer())
@@ -118,41 +118,44 @@ server <- function(input, output) {
                 ) %>%
                 group_by(party) %>%
                 summarize(total_votes = sum(votes)) %>%
+                mutate(percentage_votes = 100 * total_votes / sum(total_votes)) %>%
                 left_join(logo_mapping, by = "party"),
             aes(
-                x = reorder(party, total_votes, decreasing = TRUE), y = total_votes, fill = factor(party)
+                x = reorder(party, percentage_votes, decreasing = TRUE), y = percentage_votes, fill = factor(party)
             )
         ) +
             geom_bar(stat = "identity") +
-            geom_image(aes(image = logo), size = 0.05, by = "width") +
+            geom_image(aes(image = logo), size = 0.08, by = "width") +
+            geom_text(aes(y = percentage_votes + 3, label = paste0(round(percentage_votes, 1), "%")), size = 8, fontface="bold") +
             ylab("Votes") +
             xlab(NULL) +
+            scale_y_continuous(labels = percent_format(scale = 1), limits=c(0,50)) +
             scale_fill_manual(values = party_colors, guide = "none") +
             theme_minimal() +
-            theme(axis.text.x = element_blank())
+            theme(axis.text.x = element_blank(),
+            )
     })
     valueData <- reactiveValues(
-      value = 50,
-      color = "blue"
+        value = 50,
+        color = "blue"
     )
     output$box <- renderValueBox({
-      valueBox(
-        value = okregi[input$table_rows_selected, 2],
-        subtitle = "club",
-        color = valueData$color
-      )
+        valueBox(
+            value = okregi[input$table_rows_selected, 2],
+            subtitle = "club",
+            color = valueData$color
+        )
     })
     observeEvent(input$table_rows_selected, {
-      t = c("aqua", "red","green",  "maroon","purple")
-      club = c("PIS", "KO", "Trzecia Droga", "Lewica", "Konfederacja")
-      # get index of club
-      index = which(club == okregi[input$table_rows_selected, 2])
-      
-      valueData$value <- sample(1:100, 1)  # Update value with a random number
-      valueData$color <- t[index]
-      
+        t <- c("aqua", "red", "green", "maroon", "purple")
+        club <- c("PIS", "KO", "Trzecia Droga", "Lewica", "Konfederacja")
+        # get index of club
+        index <- which(club == okregi[input$table_rows_selected, 2])
+
+        valueData$value <- sample(1:100, 1) # Update value with a random number
+        valueData$color <- t[index]
     })
-    
+
     # output$box <- renderValueBox({
     #   valueBox(
     #     paste0(okregi[input$table_rows_selected, 2]),  icon = icon("list"),
