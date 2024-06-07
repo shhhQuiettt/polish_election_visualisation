@@ -1,6 +1,7 @@
 source("districtsUI.R")
 source("tab2.R")
 library(shinydashboard)
+library(bslib)
 
 ui <- dashboardPage(
   dashboardHeader(title = "Dashboard"),
@@ -15,8 +16,7 @@ ui <- dashboardPage(
             "Summary",
             textOutput("abc"),
             h3("asdfasdfasdf"),
-
         ),
-    )
+    ),
+    theme = bs_theme(bootswatch = "pulse")
 )))
-

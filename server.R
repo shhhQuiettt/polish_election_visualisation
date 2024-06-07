@@ -1,7 +1,10 @@
 library(ggplot2)
 library(shinydashboard)
 library(shiny)
-source("districtsServer.R")
+# source("districtsServer.R")
+library(ggimage)
+source("party_palette.R")
+
 
 server <- function(input, output) {
     # output abc is text "asdfasdf"
@@ -108,16 +111,25 @@ server <- function(input, output) {
     }
 
     output$district_outcome <- renderPlot({
-        if (is.na(input$clicked_district)) {
-            return()
-        }
         ggplot(
-            districts %>% filter(
-                district.no == input$clicked_district
-            ) %>% group_by(party) %>% summarize( total_votes = sum(votes) )
-        ) + geom_bar(stat="identity", aes(
-                x = party, y = total_votes
-        ))
+            districts %>%
+                filter(
+                    district.no == ifelse(is.null(input$clicked_district), 4, input$clicked_district)
+                ) %>%
+                group_by(party) %>%
+                summarize(total_votes = sum(votes)) %>%
+                left_join(logo_mapping, by = "party"),
+            aes(
+                x = reorder(party, total_votes, decreasing = TRUE), y = total_votes, fill = factor(party)
+            )
+        ) +
+            geom_bar(stat = "identity") +
+            geom_image(aes(image = logo), size = 0.05, by = "width") +
+            ylab("Votes") +
+            xlab(NULL) +
+            scale_fill_manual(values = party_colors, guide = "none") +
+            theme_minimal() +
+            theme(axis.text.x = element_blank())
     })
     valueData <- reactiveValues(
       value = 50,
