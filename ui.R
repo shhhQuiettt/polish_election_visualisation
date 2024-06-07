@@ -1,9 +1,13 @@
 source("districtsUI.R")
 source("tab2.R")
-
+library(shinydashboard)
 library(bslib)
 
-ui <- fluidPage(
+ui <- dashboardPage(
+  dashboardHeader(title = "Dashboard"),
+  dashboardSidebar(),
+  dashboardBody(
+  fluidPage(
     navbarPage(
         "Navbar!",
         tabPanel("tab1", districtsUI("districtsUI")),
@@ -15,4 +19,4 @@ ui <- fluidPage(
         ),
     ),
     theme = bs_theme(bootswatch = "pulse")
-)
+)))
