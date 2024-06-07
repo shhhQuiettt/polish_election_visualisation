@@ -21,6 +21,7 @@ for (district_no in 1:41) {
     )
 }
 
+distinct(districts, party)
 
 
 ggplot(
