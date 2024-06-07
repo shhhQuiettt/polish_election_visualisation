@@ -1,7 +1,12 @@
 source("districtsUI.R")
 source("tab2.R")
+library(shinydashboard)
 
-ui <- fluidPage(
+ui <- dashboardPage(
+  dashboardHeader(title = "Dashboard"),
+  dashboardSidebar(),
+  dashboardBody(
+  fluidPage(
     navbarPage(
         "Navbar!",
         tabPanel("tab1", districtsUI("districtsUI")),
@@ -13,5 +18,5 @@ ui <- fluidPage(
 
         ),
     )
-)
+)))
 

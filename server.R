@@ -1,4 +1,6 @@
 library(ggplot2)
+library(shinydashboard)
+library(shiny)
 source("districtsServer.R")
 
 server <- function(input, output) {
@@ -6,6 +8,7 @@ server <- function(input, output) {
     # output$abc <- renderText({
     #     "im abc"
     # })
+  print(sprintf("%03d", NULL))
     output$testText <- renderText({
         paste(
             "Boredom level ",
@@ -15,20 +18,10 @@ server <- function(input, output) {
     })
 
     # import data from csv okregi.csv
-    okregi <- read.csv("output.csv", sep = ",", encoding = "UTF-8")
+    okregi <- read.csv("output.csv", sep = ",", encoding = "UTF-8")[,1:2]
     kandydaci <- read.csv("kandydaci_sejm_utf8.csv", sep = ";", encoding = "UTF-8")
     kandydaci[kandydaci$Nazwisko.i.imiona == okregi[2, 1], 7]
 
-    output$image <- renderImage(
-        {
-            list(
-                src = "image.jpg",
-                contentType = "image/jpeg",
-                alt = "This is alternate text"
-            )
-        },
-        deleteFile = FALSE
-    )
     output$table <- DT::renderDT(
         {
             okregi
@@ -41,10 +34,6 @@ server <- function(input, output) {
     )
 
 
-    # output$clicked_row <- renderPrint({
-    #   cat("You clicked row", input$clicked_row, "\n")
-    # })
-    name <- "stefan"
     output$name <- renderText({
         okregi[input$table_rows_selected, 1]
     })
@@ -60,41 +49,23 @@ server <- function(input, output) {
     output$votes <- renderText({
         paste("number of votes: ", kandydaci[kandydaci$Nazwisko.i.imiona == okregi[input$table_rows_selected, 1], 13])
     })
-    output$club <- renderText({
-        paste("club: ", okregi[input$table_rows_selected, 2])
-    })
-    output$number <- renderText({
-        input$table_rows_selected
-    })
-    # upload image
-    imageURL <- "image.jpg"
-    # imageURL = "./obrazy/001.jpg"
+    
+
     output$image <- renderImage(
         {
             list(
-                src = paste("obrazy/", sprintf("%03d", input$table_rows_selected), ".jpg", sep = ""),
+                src = paste("images/", sprintf("%03d", input$table_rows_selected), ".jpg", sep = ""),
                 contentType = "image/jpeg",
                 alt = "This is alternate text"
             )
         },
         deleteFile = FALSE
     )
-    observeEvent(
-        input$table_rows_selected,
-        function() {
-            if (is.null(input$table_rows_selected)) {
-                imageURL <- "image.jpg"
-            } else {
-                imageURL <- paste("obrazy/", sprintf("%03d", input$table_rows_selected), ".jpg", sep = "")
-            }
-        }
-    )
+  
 
     output$clicked_row <- renderPrint({
-        if (is.null(input$table_rows_selected)) {
-            return()
-        }
-        okregi[input$table_rows_selected, 1]
+      sprintf("%03d", input$table_rows_selected)
+      
     })
 
     output$clicked_d <- renderPrint({
@@ -148,6 +119,34 @@ server <- function(input, output) {
                 x = party, y = total_votes
         ))
     })
+    valueData <- reactiveValues(
+      value = 50,
+      color = "blue"
+    )
+    output$box <- renderValueBox({
+      valueBox(
+        value = okregi[input$table_rows_selected, 2],
+        subtitle = "club",
+        color = valueData$color
+      )
+    })
+    observeEvent(input$table_rows_selected, {
+      t = c("aqua", "red","green",  "maroon","purple")
+      club = c("PIS", "KO", "Trzecia Droga", "Lewica", "Konfederacja")
+      # get index of club
+      index = which(club == okregi[input$table_rows_selected, 2])
+      
+      valueData$value <- sample(1:100, 1)  # Update value with a random number
+      valueData$color <- t[index]
+      
+    })
+    
+    # output$box <- renderValueBox({
+    #   valueBox(
+    #     paste0(okregi[input$table_rows_selected, 2]),  icon = icon("list"),
+    #     color = "purple"
+    #   )
+    # })
 
     # district <- district %>% select(-"Liczba.uwzględnionych.komisji", -"Liczba.komisji")
     # district %>% gather(key="person_party", value="votes" ,2:length(district) ) %>%
