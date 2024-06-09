@@ -25,28 +25,6 @@ tab2UI <- function(id) {
            DT::DTOutput("table"),
   )
   )
-  # splitLayout(
-  # 
-  #   sidebarPanel(
-  #     titlePanel("Personal Information"),
-  #     imageOutput("image", width = "50%", height = "50%"),
-  #     h2(textOutput("name")),
-  #     textOutput("sex"),
-  #     textOutput("job"),
-  #     textOutput("place"),
-  #     textOutput("votes"),
-  #     textOutput("club"),
-  #     textOutput("number"),
-  #     valueBoxOutput("box")
-  #     ),
-  #     
-  #   mainPanel(textOutput("testText"),
-  #             verbatimTextOutput("clicked_row"),
-  #             DT::DTOutput("table"),
-  # 
-  #   )
-  # )
-  
 
 }
 

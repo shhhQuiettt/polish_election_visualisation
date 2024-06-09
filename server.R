@@ -25,6 +25,7 @@ server <- function(input, output) {
     kandydaci <- read.csv("kandydaci_sejm_utf8.csv", sep = ";", encoding = "UTF-8")
     kandydaci[kandydaci$Nazwisko.i.imiona == okregi[2, 1], 7]
 
+    
     output$table <- DT::renderDT(
         {
             okregi
@@ -131,6 +132,36 @@ server <- function(input, output) {
             theme_minimal() +
             theme(axis.text.x = element_blank())
     })
+    
+   
+    
+    # add title to the legend of the plot
+    
+    
+    output$mandate_plot <- renderPlot({
+      ggplot(
+        kandydaci %>%
+          filter(Nr.okręgu == ifelse(is.null(input$clicked_district), 4, input$clicked_district), Czy.przyznano.mandat == 'Tak') %>%
+          mutate(club = case_when(
+            Nr.listy == 4 ~ "PIS",
+            Nr.listy == 6 ~ "KO",
+            Nr.listy == 2 ~ "Trzecia Droga",
+            Nr.listy == 3 ~ "Lewica",
+            Nr.listy == 5 ~ "Konfederacja"
+          )) %>%
+          select(club, Czy.przyznano.mandat) %>%
+          group_by(club) %>%
+          count(),
+        aes(x = "", y = n, fill = factor(club))) +
+        geom_bar(stat = "identity",width = 1, color="white") +
+        coord_polar("y",start=0)+
+        theme_void() +
+        labs(fill = "club") +
+        geom_text(aes(label = n), position = position_stack(vjust = 0.5)) +
+        coord_polar(theta = "y")+
+        ggtitle("Mandates")
+    })
+    
     valueData <- reactiveValues(
       value = 50,
       color = "blue"
