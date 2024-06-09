@@ -7,10 +7,7 @@ source("party_palette.R")
 
 
 server <- function(input, output) {
-    # output abc is text "asdfasdf"
-    # output$abc <- renderText({
-    #     "im abc"
-    # })
+
     print(sprintf("%03d", NULL))
     output$testText <- renderText({
         paste(
@@ -25,6 +22,7 @@ server <- function(input, output) {
     kandydaci <- read.csv("kandydaci_sejm_utf8.csv", sep = ";", encoding = "UTF-8")
     kandydaci[kandydaci$Nazwisko.i.imiona == okregi[2, 1], 7]
 
+    
     output$table <- DT::renderDT(
         {
             okregi
@@ -53,13 +51,14 @@ server <- function(input, output) {
         paste("number of votes: ", kandydaci[kandydaci$Nazwisko.i.imiona == okregi[input$table_rows_selected, 1], 13])
     })
 
+    
 
     output$image <- renderImage(
         {
             list(
-                src = paste("images/", sprintf("%03d", input$table_rows_selected), ".jpg", sep = ""),
+                src = paste("images/", ifelse(is.null(input$table_rows_selected), "default", sprintf("%03d", input$table_rows_selected)), ".jpg", sep = ""),
                 contentType = "image/jpeg",
-                alt = "This is alternate text"
+                alt = "Cannot generate image"
             )
         },
         deleteFile = FALSE
@@ -135,6 +134,31 @@ server <- function(input, output) {
             theme(axis.text.x = element_blank(),
             )
     })
+    
+    output$mandate_plot <- renderPlot({
+      ggplot(
+        kandydaci %>%
+          filter(Nr.okręgu == ifelse(is.null(input$clicked_district), 4, input$clicked_district), Czy.przyznano.mandat == 'Tak') %>%
+          mutate(club = case_when(
+            Nr.listy == 4 ~ "PIS",
+            Nr.listy == 6 ~ "KO",
+            Nr.listy == 2 ~ "Trzecia Droga",
+            Nr.listy == 3 ~ "Lewica",
+            Nr.listy == 5 ~ "Konfederacja"
+          )) %>%
+          select(club, Czy.przyznano.mandat) %>%
+          group_by(club) %>%
+          count(),
+        aes(x = "", y = n, fill = factor(club))) +
+        geom_bar(stat = "identity",width = 1, color="white") +
+        coord_polar("y",start=0)+
+        theme_void() +
+        labs(fill = "club") +
+        geom_text(aes(label = n), position = position_stack(vjust = 0.5)) +
+        coord_polar(theta = "y")+
+        ggtitle("Mandates")
+    })
+    
     valueData <- reactiveValues(
         value = 50,
         color = "blue"
@@ -156,15 +180,4 @@ server <- function(input, output) {
         valueData$color <- t[index]
     })
 
-    # output$box <- renderValueBox({
-    #   valueBox(
-    #     paste0(okregi[input$table_rows_selected, 2]),  icon = icon("list"),
-    #     color = "purple"
-    #   )
-    # })
-
-    # district <- district %>% select(-"Liczba.uwzględnionych.komisji", -"Liczba.komisji")
-    # district %>% gather(key="person_party", value="votes" ,2:length(district) ) %>%
-    #   mutate(person = person_party %>% str_extract("^.*\\.\\.\\.") %>% str_replace("\\.\\.\\.","")  %>%
-    #   mutate(person = person_party %>% str_extract("\\.\\.\\..*$") %>% str_replace("\\.\\.\\.",""))
 }

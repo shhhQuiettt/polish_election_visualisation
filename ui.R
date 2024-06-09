@@ -1,5 +1,7 @@
 source("districtsUI.R")
 source("tab2.R")
+source("tab3_w.R")
+
 library(shinydashboard)
 library(bslib)
 
@@ -12,6 +14,7 @@ ui <- dashboardPage(
         "Navbar!",
         tabPanel("tab1", districtsUI("districtsUI")),
         tabPanel("tab2", tab2UI("tab2")),
+        tabPanel("tab3_w", tab3w("tab3_w")),
         tabPanel(
             "Summary",
             textOutput("abc"),
