@@ -7,14 +7,12 @@ districtsUI <- function(id) {
     fluidPage(
         fluidRow(
             column(
-                5,
+                7,
                 verbatimTextOutput("clicked_d"),
-                verbatimTextOutput("dummy"),
-                plotOutput("district_outcome"),
+                plotOutput("district_outcome", height = "60%"),
             ),
             column(
-                   7,
-                h3("plot"),
+                   5,
                 div(
                     HTML(read_svg("www/districts.svg")),
                 ),

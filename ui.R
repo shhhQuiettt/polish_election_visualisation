@@ -7,8 +7,7 @@ library(bslib)
 
 ui <- dashboardPage(
   dashboardHeader(title = "Dashboard"),
-  # remove the sidebar
-  dashboardSidebar( disable = TRUE),
+  dashboardSidebar(disable=TRUE),
   dashboardBody(
   fluidPage(
     navbarPage(
