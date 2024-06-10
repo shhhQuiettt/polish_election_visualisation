@@ -135,6 +135,14 @@ server <- function(input, output) {
             )
     })
     
+    pp_color = c(
+      "Trzecia Droga" = "#f9c508",
+      "Lewica" = "#ec2f4e",
+      "PIS" = "#1414b8",
+      "Konfederacja" = "#1c304c",
+      "KO" = "#fba754"
+    )
+    
     output$mandate_plot <- renderPlot({
       ggplot(
         kandydaci %>%
@@ -157,7 +165,8 @@ server <- function(input, output) {
         geom_text(aes(label = n), position = position_stack(vjust = 0.5),size = 15) +
         coord_polar(theta = "y")+
         theme(legend.text = element_text(size = 15),
-              legend.title = element_blank())
+              legend.title = element_blank())+
+        scale_fill_manual(values = pp_color)
       
         
     })
