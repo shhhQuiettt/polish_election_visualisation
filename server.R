@@ -153,11 +153,15 @@ server <- function(input, output) {
         geom_bar(stat = "identity",width = 1, color="white") +
         coord_polar("y",start=0)+
         theme_void() +
-        labs(fill = "club") +
-        geom_text(aes(label = n), position = position_stack(vjust = 0.5)) +
+        labs(fill = "PARTY") +
+        geom_text(aes(label = n), position = position_stack(vjust = 0.5),size = 15) +
         coord_polar(theta = "y")+
-        ggtitle("Mandates")
+        theme(legend.text = element_text(size = 15),
+              legend.title = element_blank())
+      
+        
     })
+    
     
     valueData <- reactiveValues(
         value = 50,
@@ -171,7 +175,7 @@ server <- function(input, output) {
         )
     })
     observeEvent(input$table_rows_selected, {
-        t <- c("aqua", "red", "green", "maroon", "purple")
+        t <- c("blue", "orange", "yellow", "red", "purple")
         club <- c("PIS", "KO", "Trzecia Droga", "Lewica", "Konfederacja")
         # get index of club
         index <- which(club == okregi[input$table_rows_selected, 2])

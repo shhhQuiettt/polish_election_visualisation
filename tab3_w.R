@@ -7,7 +7,6 @@ tab3w <- function(id) {
     ),
     column(
       7,
-      h3("plot"),
       div(
         HTML(read_svg("www/districts.svg")),
       ),

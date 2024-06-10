@@ -5,21 +5,13 @@ source("tab3_w.R")
 library(shinydashboard)
 library(bslib)
 
-ui <- dashboardPage(
-  dashboardHeader(title = "Dashboard"),
-  dashboardSidebar(disable=TRUE),
-  dashboardBody(
-  fluidPage(
+ui <- fluidPage(
     navbarPage(
-        "Navbar!",
-        tabPanel("tab1", districtsUI("districtsUI")),
-        tabPanel("tab2", tab2UI("tab2")),
-        tabPanel("tab3_w", tab3w("tab3_w")),
-        tabPanel(
-            "Summary",
-            textOutput("abc"),
-            h3("asdfasdfasdf"),
-        ),
+      img(src = "herb.png", height = "55px", width = "50px"),
+        tabPanel("ELECTION RESULTS", districtsUI("districtsUI")),
+        tabPanel("ELECTED SENATORS", tab2UI("tab2")),
+        tabPanel("MANDATES DISTRIBUTION", tab3w("tab3_w")),
+        
     ),
     theme = bs_theme(bootswatch = "pulse")
-)))
+)
